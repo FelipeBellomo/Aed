@@ -6,7 +6,7 @@
 int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes);
 
 int main() {
-    int nums[] = {0,0,0};
+    int nums[] = {0,1,1};
     int numsSize = 3;
     int returnSize = 0;
     int* returnColumnSizes = NULL;
@@ -37,7 +37,7 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
     int** retorno = (int**)malloc(sizeof(int*) * 1);
     //int existeString = 0;
     int strin = 0;
-    *returnColumnSizes = (int*)malloc(3 * sizeof(int)); 
+    //*returnColumnSizes = (int*)malloc(3 * sizeof(int)); 
     
 
      for (i = 0; i < numsSize; i++) {
@@ -104,11 +104,14 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
 
         *returnSize = novoTamanho;
         *returnColumnSizes = realloc(*returnColumnSizes, novoTamanho * sizeof(int));
-    }
+    }else return NULL;
 
+    
     return retorno;
 }
 
+// Acho que o problema ta quando tu testa p o caso 0,1,1, por exemplo. Pq o retorno tem lixo dentro, tem que achar uma forma de deixar ele vazio,
+// Talvez verifica antes de retornar, se tem algo dentro. se tiver, retorna, senao retorna NULL
  
     
 
