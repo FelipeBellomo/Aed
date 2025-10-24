@@ -16,11 +16,17 @@ int main() {
 
 char* convert(char* s, int numRows) {
     char** retorno =(char**)malloc(sizeof(char*) * numRows);
-    int colunm = 0, linha = 0,caracter = 0;
     int comprimento = strlen(s);
-    char resposta[comprimento];
+    char* resposta = (char*)malloc(sizeof(char) * (comprimento + 1));
+
+    
+
+    int colunm = 0, linha = 0,caracter = 0;
     
     retorno[linha]=(char*)malloc(sizeof(char) * 1); 
+
+    if(comprimento == 1)
+        return s;
     
     while (comprimento > 0){
         
@@ -28,39 +34,32 @@ char* convert(char* s, int numRows) {
         
         if(linha == (numRows - 1)){
             for(; linha >= 0; linha--, colunm++){
-                retorno[linha]=(char*)malloc(sizeof(char) * colunm); 
-                retorno[linha][colunm] = s[caracter];
-                caracter++;
+                retorno[linha]=(char*)malloc(sizeof(char) * colunm);    //malloc de colunas
+                retorno[linha][colunm] = s[caracter++];
                 comprimento--;
             }
         }else{
-            //retorno[linha]=(char*)malloc(sizeof(char) * colunm);    //malloc de colunas
-            retorno[linha][colunm] = s[caracter];
-            linha++;
-            caracter++;
+            retorno[linha]=(char*)malloc(sizeof(char) * colunm);      //malloc de colunas
+            retorno[linha++][colunm] = s[caracter++];
             comprimento--;
             
         }
         if(linha < 0)
-            linha = 0;
-        
-        if(linha < 3)
-            printf("%s",retorno[1]);
-        
+            linha = 0;      
     }
     
     int count = 0;
     for (int i = 0; i < numRows; i++){
-        for (int j = 0; j < colunm && (j + 1) < colunm; j++){
+        for (int j = 0; j < colunm ; j++){
             if(retorno[i][j] != '\0'){
-                retorno[i][j] = resposta[count];
+                resposta[count] = retorno[i][j];
                 count++;
             }
         }
         
     }
     
-    return &resposta[0]; 
+    return resposta;
     
 }
    // for(int linha = 0; linha < numRows; linha++){
