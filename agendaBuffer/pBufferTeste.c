@@ -58,7 +58,7 @@ int main() {
 }
 
 void add(void **pBuffer) {
-    *pBuffer = realloc(*pBuffer, maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 1) + 1));
+    *pBuffer = realloc(*pBuffer, maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 1)));
 
     if (!*pBuffer) {
         printf("Erro segmentação\n");
@@ -86,10 +86,10 @@ void search(void **pBuffer) {
     printf("Digite o email para buscar:\n");
     scanf("%49s",((char *)(*pBuffer) + 3));
 
-    void* str = ((char *)(*pBuffer) + 3);
+    void* str = strcpy(str, ((char *)(*pBuffer) + 3));
 
         while(*((int *)(*pBuffer)+ 2) < (*((int *)(*pBuffer) + 1))){ 
-            if(strcmp((char*)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50 + sizeof(int)), (char*)str) == 0)
+            if(strcmp((char*)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50 + sizeof(int)), (char*)str == 0))
                 printf("Achei\n");
 
         
@@ -131,7 +131,7 @@ maloc_inicio -> outro byte de controle, porem para nome de pesquisa
 tam_pessoas * (*((int*)(*pBuffer)+2)) -> multiplica o tamanha em bytes de cada pessoa, pela quantidade de pessoas cadastradas
                                         essa qtd se encontra no terceiro byte de todo bloco, por isso (*((int*)(*pBuffer)+2))
 
-*((int *)((char *)(*pBuffer) + sizeof(int) * 3 + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50)) -> essa linha contem *((int*)(char*)(*pBuffer))
+*((int *)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50)) -> essa linha contem *((int*)(char*)(*pBuffer))
                                                                                                                     para fazer o casting de int em cima do de char,
                                                                                                                     e o * por fora referencia o valor numerico dessa
                                                                                                                     parte da memoria
