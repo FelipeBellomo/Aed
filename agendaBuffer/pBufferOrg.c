@@ -24,7 +24,7 @@ int main() {
     *((int *)pBuffer + 1) = 0;  // byte qtd pessoas
     *((int *)pBuffer + 2) = 0;  // byte controlador de laços
     ((char *)pBuffer)[sizeof(int) * 3] = '\0'; //byte para armazenar nome para dar search
-    printf(" Qtd pessoas: %d\n",*((int *)(pBuffer)+ 1));
+
 
     do {
         printf("-- MENU:\n");
@@ -38,7 +38,6 @@ int main() {
         switch (*(int *)pBuffer) {
         case 1:
             *((int *)pBuffer + 1) += 1;//contador da qtd de pessoas
-            printf(" Qtd pessoas: %d\n",*((int *)(pBuffer)+ 1));
             add(&pBuffer);
             break;
         case 2:
@@ -60,16 +59,18 @@ int main() {
 }
 
 void add(void **pBuffer) {
-    *pBuffer = realloc(*pBuffer, maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 1) + 1));// aqui realoco conforme for add pessoas, sempre multiplicando pelo byte de qtd de pessoas
-    // *((int *)(*pBuffer + 1)) = *((int *)(*pBuffer) + 1) + 1;//contador da qtd de pessoas
+    void* tempBuffer = realloc(*pBuffer, maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 1) + 1));
+    void** qtdPeople = *((int *)(*pBuffer) + 1);
 
-    if (!*pBuffer) {
+    if (!tempBuffer) {
         printf("Erro segmentação\n");
         exit(1);
     }
 
+    *pBuffer = tempBuffer;// aqui realoco conforme for add pessoas, sempre multiplicando pelo byte de qtd de pessoas
+
     printf("Digite o nome:\n");
-    scanf("%49s",(char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 1)));  //calcula o tamanho de bytes necessarios para pular e escrever corretamente, multiplicando o tamanho padrao de cada pessoa, pela qtd
+    scanf("%49s",(char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*qtdPeople));  //calcula o tamanho de bytes necessarios para pular e escrever corretamente, multiplicando o tamanho padrao de cada pessoa, pela qtd
 
     printf("Digite a idade:\n");
     scanf("%d",(int *)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 1)) + (sizeof(char) * 50))); // aqui escreve no campo reservado para a idade, pulando a alocação do nome 
@@ -90,17 +91,15 @@ void search(void **pBuffer) {
     printf("Digite o email para buscar:\n");
     scanf("%49s", str); //  atribuo a string no bloco de pesquisa 
 
-
-        while(*((int *)(*pBuffer)+ 2) <= *((int *)(*pBuffer) + 1)){  // laço padrão comparando qtd de pessoas com o contador de laço
-            if(strcmp((char*)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50 + sizeof(int)), (char*)str) == 0){// aqui comparo o espaço cada espaço de memória que contenha email com a referencia atribuida acima
-                printf("Achei\n");
-                break;
-
+    while(*((int *)(*pBuffer)+ 2) <= *((int *)(*pBuffer) + 1)){  // laço padrão comparando qtd de pessoas com o contador de laço
+        if(strcmp((char*)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50 + sizeof(int)), (char*)str) == 0){// aqui comparo o espaço cada espaço de memória que contenha email com a referencia atribuida acima
+            printf("Achei\n");
+            break;
             }
                   
-            *((int *)(*pBuffer)+ 2) += 1; //incremetento para continuar o laço
+        *((int *)(*pBuffer)+ 2) += 1; //incremetento para continuar o laço
 
-        }   
+    }   
 
     ((char *)(*pBuffer))[sizeof(int) * 3] = '\0'; //byte para armazenar nome para dar search
     
@@ -113,11 +112,10 @@ void list(void **pBuffer){
     *((int *)(*pBuffer)+ 2) = 1; //  defino o byte de controle de laço como 0
 
     while(*((int *)(*pBuffer)+ 2) <= *((int *)(*pBuffer) + 1)){     //laço comparando o byte 1 com o 2, para printar em ordem
-
-        printf("Nome: %s\nIdade: %d\nEmail: %s\n\n",
-            (char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)),    // mesma logica de implementação do scanf, porem para printar
-            *((int *)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50)),
-            (char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50 + sizeof(int));
+        
+        printf("Nome: %s\n", (char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)));
+        printf("Idade: %d\n",  *((int *)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50)));
+        printf("Email: %s\n", (char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50 + sizeof(int));
         
         *((int *)(*pBuffer)+ 2) += 1;// contador do laço
 
