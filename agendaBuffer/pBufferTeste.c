@@ -102,10 +102,3 @@ void list(void **pBuffer){
     *((int *)(*pBuffer)+ 2) = 0;
     printf("ok\n");
 }
-
-/*Arrumar a alocação, por ter adicionado um byte para pesquisa de nome, 
-(char *)(*pBuffer) + sizeof(int) * 4 + tam_pessoas * (*((int *)(*pBuffer) + 2)) 
-
-deve ficar assim -> (char *)(*pBuffer) + sizeof(int) * 3 + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2))
-
-*/
