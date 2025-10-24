@@ -24,6 +24,7 @@ int main() {
     *((int *)pBuffer + 1) = 0;  // byte qtd pessoas
     *((int *)pBuffer + 2) = 0;  // byte controlador de laços
     ((char *)pBuffer)[sizeof(int) * 3] = '\0'; //byte para armazenar nome para dar search
+    printf(" Qtd pessoas: %d\n",*((int *)(pBuffer)+ 1));
 
     do {
         printf("-- MENU:\n");
@@ -36,8 +37,9 @@ int main() {
 
         switch (*(int *)pBuffer) {
         case 1:
+            *((int *)pBuffer + 1) += 1;//contador da qtd de pessoas
+            printf(" Qtd pessoas: %d\n",*((int *)(pBuffer)+ 1));
             add(&pBuffer);
-            *((int *)pBuffer + 1) += 1;
             break;
         case 2:
             removed(&pBuffer);
@@ -58,7 +60,9 @@ int main() {
 }
 
 void add(void **pBuffer) {
-    *pBuffer = realloc(*pBuffer, maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 1)));
+    *pBuffer = realloc(*pBuffer, maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 1) + 1));// aqui realoco conforme for add pessoas, sempre multiplicando pelo byte de qtd de pessoas
+    // *((int *)(*pBuffer + 1)) = *((int *)(*pBuffer) + 1) + 1;//contador da qtd de pessoas
+    printf(" Qtd pessoas: %d\n",*((int *)(*pBuffer)+ 1));
 
     if (!*pBuffer) {
         printf("Erro segmentação\n");
@@ -81,50 +85,59 @@ void removed(void **pBuffer) {
 
 void search(void **pBuffer) {
 
-    *((int*)(*pBuffer) + 2) = 0;
+    *((int*)(*pBuffer) + 2) = 1; // prevenção para garantir o controle de laço como 0
+    printf(" Qtd pessoas: %d\n",*((int *)(*pBuffer)+ 1));
 
     printf("Digite o email para buscar:\n");
-    scanf("%49s",((char *)(*pBuffer) + 3));
+    scanf("%49s",(char*)((char *)(*pBuffer))[sizeof(int) * 3]); //  atribuo a string no bloco de pesquisa 
+    printf(" Qtd pessoas: %d\n",*((int *)(*pBuffer)+ 1));
+    void* str = strcpy((char*)str, (char*)((char *)(*pBuffer))[sizeof(int) * 3]);// copio para o ponteiro str afim de facilitar a visualização
 
-    void* str = strcpy(str, ((char *)(*pBuffer) + 3));
-
-        while(*((int *)(*pBuffer)+ 2) < (*((int *)(*pBuffer) + 1))){ 
-            if(strcmp((char*)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50 + sizeof(int)), (char*)str == 0))
+        while(*((int *)(*pBuffer)+ 2) <= *((int *)(*pBuffer) + 1)){  // laço padrão comparando qtd de pessoas com o contador de laço
+            if(strcmp((char*)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50 + sizeof(int)), (char*)str) == 0){// aqui comparo o espaço cada espaço de memória que contenha email com a referencia atribuida acima
                 printf("Achei\n");
+                break;
 
+            }
+            //ps: fazer teste caso o email não conste dentro do bloco de memória
+            
         
-            *((int *)(*pBuffer)+ 2) += 1;
+            *((int *)(*pBuffer)+ 2) += 1; //incremetento para continuar o laço
+            printf(" Buffer contador: %d\n",*((int *)(*pBuffer)+ 2));
+            printf(" Qtd pessoas: %d\n",*((int *)(*pBuffer)+ 1));
         }   
 
     ((char *)(*pBuffer))[sizeof(int) * 3] = '\0'; //byte para armazenar nome para dar search
-    *((int*)(*pBuffer) + 2) = 0;
+    
 
-    printf("ok\n");
+    printf("Email nao cadastrado\n");
 }
 void list(void **pBuffer){
 
-    *((int *)(*pBuffer)+ 2) = 0; //  defino o byte de controle de laço como 1, para efeito de multiplicação
+    *((int *)(*pBuffer)+ 2) = 1; //  defino o byte de controle de laço como 0
+    printf(" Qtd pessoas: %d\n",*((int *)(*pBuffer)+ 1));
 
-    while(*((int *)(*pBuffer)+ 2) < *((int *)(*pBuffer) + 1)){     //laço comparando o byte 1 com o 2, para printar em ordem
+    while(*((int *)(*pBuffer)+ 2) <= *((int *)(*pBuffer) + 1)){     //laço comparando o byte 1 com o 2, para printar em ordem
 
         printf("Nome: %s\nIdade: %d\nEmail: %s\n\n",
             (char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)),    // mesma logica de implementação do scanf, porem para printar
             *((int *)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50)),
             (char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50 + sizeof(int));
         
-        *((int *)(*pBuffer)+ 2) += 1;
+        *((int *)(*pBuffer)+ 2) += 1;// contador do laço
+        printf(" Buffer contador: %d\n",*((int *)(*pBuffer)+ 2));
+        printf(" Qtd pessoas: %d\n",*((int *)(*pBuffer)+ 1));
     }
 
-    *((int *)(*pBuffer)+ 2) = 0;
+    
     printf("ok\n");
 }
 
 /*
 (char*)(*pBuffer) -> casting para char para poder andar byte a byte em todo acesso da memória
 
-sizeof(int) * 3 -> bytes de controle no inicio do bloco
 
-maloc_inicio -> outro byte de controle, porem para nome de pesquisa
+maloc_inicio -> contem os 4 bytes de controle, menu, qtd pessoas, controle de laço e nome para pesquisa
 
 (*((int*)(*pBuffer)+2)) -> byte de controle qtd de pessoas
 
