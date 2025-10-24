@@ -23,7 +23,7 @@ int main() {
 
     *((int *)pBuffer + 1) = 0;  // byte qtd pessoas
     *((int *)pBuffer + 2) = 0;  // byte controlador de laços
-    *((char *)pBuffer + 3) = '\0'; //byte para armazenar nome para dar search
+    ((char *)pBuffer)[sizeof(int) * 3] = '\0'; //byte para armazenar nome para dar search
 
     do {
         printf("-- MENU:\n");
@@ -58,7 +58,7 @@ int main() {
 }
 
 void add(void **pBuffer) {
-    *pBuffer = realloc(*pBuffer, sizeof(int) * 4 + tam_pessoas * (*((int *)(*pBuffer) + 1) + 1));
+    *pBuffer = realloc(*pBuffer, maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 1) + 1));
 
     if (!*pBuffer) {
         printf("Erro segmentação\n");
@@ -66,23 +66,39 @@ void add(void **pBuffer) {
     }
 
     printf("Digite o nome:\n");
-    scanf("%49s",(char *)(*pBuffer) + sizeof(int) * 4 + tam_pessoas * (*((int *)(*pBuffer) + 1)));  //calcula o tamanho de bytes necessarios para pular e escrever corretamente, multiplicando o tamanho padrao de cada pessoa, pela qtd
+    scanf("%49s",(char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 1)));  //calcula o tamanho de bytes necessarios para pular e escrever corretamente, multiplicando o tamanho padrao de cada pessoa, pela qtd
 
     printf("Digite a idade:\n");
-    scanf("%d",(int *)((char *)(*pBuffer) + sizeof(int) * 4 + tam_pessoas * (*((int *)(*pBuffer) + 1)) + (sizeof(char) * 50))); // aqui escreve no campo reservado para a idade, pulando a alocação do nome 
+    scanf("%d",(int *)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 1)) + (sizeof(char) * 50))); // aqui escreve no campo reservado para a idade, pulando a alocação do nome 
 
     printf("Digite o email:\n");
-    scanf("%49s", (char *)(*pBuffer) + sizeof(int) * 4 + tam_pessoas * (*((int *)(*pBuffer) + 1)) + (sizeof(char) * 50) + sizeof(int));// aqui escreve no campo reservado para o email, pulando a alocação da idade 
+    scanf("%49s", (char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 1)) + (sizeof(char) * 50) + sizeof(int));// aqui escreve no campo reservado para o email, pulando a alocação da idade 
 }
 
 void removed(void **pBuffer) {
     printf("ok\n");
 }
+
 void search(void **pBuffer) {
 
-    // for(*((int*)(*pBuffer) + 2) < *((int*)(pBuffer) + 1); (*((int*)(*pBuffer) + 2))++){ // laço comparando byte 2 com byte 1, respectivamente controlador de laços e qtd de pessoas
+    *((int*)(*pBuffer) + 2) = 0;
+
+    printf("Digite o email para buscar:\n");
+    scanf("%49s",((char *)(*pBuffer) + 3));
+
+    void* str = ((char *)(*pBuffer) + 3);
+
+        while(*((int *)(*pBuffer)+ 2) < (*((int *)(*pBuffer) + 1))){ 
+            if(strcmp((char*)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50 + sizeof(int)), (char*)str) == 0)
+                printf("Achei\n");
+
         
-    // }
+            *((int *)(*pBuffer)+ 2) += 1;
+        }   
+
+    ((char *)(*pBuffer))[sizeof(int) * 3] = '\0'; //byte para armazenar nome para dar search
+    *((int*)(*pBuffer) + 2) = 0;
+
     printf("ok\n");
 }
 void list(void **pBuffer){
@@ -92,9 +108,9 @@ void list(void **pBuffer){
     while(*((int *)(*pBuffer)+ 2) < *((int *)(*pBuffer) + 1)){     //laço comparando o byte 1 com o 2, para printar em ordem
 
         printf("Nome: %s\nIdade: %d\nEmail: %s\n\n",
-            (char *)(*pBuffer) + sizeof(int) * 4 + tam_pessoas * (*((int *)(*pBuffer) + 2)),    // mesma logica de implementação do scanf, porem para printar
-            *((int *)((char *)(*pBuffer) + sizeof(int) * 4 + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50)),
-            (char *)(*pBuffer) + sizeof(int) * 4 + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50 + sizeof(int));
+            (char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)),    // mesma logica de implementação do scanf, porem para printar
+            *((int *)((char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50)),
+            (char *)(*pBuffer) + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50 + sizeof(int));
         
         *((int *)(*pBuffer)+ 2) += 1;
     }
@@ -102,3 +118,23 @@ void list(void **pBuffer){
     *((int *)(*pBuffer)+ 2) = 0;
     printf("ok\n");
 }
+
+/*
+(char*)(*pBuffer) -> casting para char para poder andar byte a byte em todo acesso da memória
+
+sizeof(int) * 3 -> bytes de controle no inicio do bloco
+
+maloc_inicio -> outro byte de controle, porem para nome de pesquisa
+
+(*((int*)(*pBuffer)+2)) -> byte de controle qtd de pessoas
+
+tam_pessoas * (*((int*)(*pBuffer)+2)) -> multiplica o tamanha em bytes de cada pessoa, pela quantidade de pessoas cadastradas
+                                        essa qtd se encontra no terceiro byte de todo bloco, por isso (*((int*)(*pBuffer)+2))
+
+*((int *)((char *)(*pBuffer) + sizeof(int) * 3 + maloc_inicio + tam_pessoas * (*((int *)(*pBuffer) + 2)) + 50)) -> essa linha contem *((int*)(char*)(*pBuffer))
+                                                                                                                    para fazer o casting de int em cima do de char,
+                                                                                                                    e o * por fora referencia o valor numerico dessa
+                                                                                                                    parte da memoria
+                                                                                                            
+
+*/
