@@ -56,11 +56,11 @@ bool canPlaceFlowers(int* flowerbed, int flowerbedSize, int n){
                 if(flowerbed[i - 1] == 0){
                     flowerbed[i] = 1;
                     n--;
-                }// aqui testo para as posições do meio, sem as extremidades
+                }// aqui a situação da ultima posição
             }else if(flowerbed[i + 1] == 0 && flowerbed[i - 1] != 1){
                 flowerbed[i] = 1;
                 n--;
-            }// aqui a situação da ultima posição
+            }// aqui testo para as posições do meio, sem as extremidades
         }
 
         if(n == 0)

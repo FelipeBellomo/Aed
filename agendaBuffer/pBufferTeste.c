@@ -88,7 +88,9 @@ void search(void **pBuffer) {
     char* str = (char*)((char *)*pBuffer +  sizeof(int) * 3);// copio para o ponteiro str o endereco do byte de pesquisa , afim de facilitar a visualização
 
     printf("Digite o email para buscar:\n");
+
     scanf("%49s", str); //  atribuo a string no bloco de pesquisa 
+
 
 
         while(*((int *)(*pBuffer)+ 2) <= *((int *)(*pBuffer) + 1)){  // laço padrão comparando qtd de pessoas com o contador de laço
