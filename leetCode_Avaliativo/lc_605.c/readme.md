@@ -17,3 +17,8 @@ Example 2:
 
 Input: flowerbed = [1,0,0,0,1], n = 2
 Output: false
+
+Input: flowerbed = [0,0,0,0,1] n = 2
+Output: true
+
+Complexity : O(n)
