@@ -5,7 +5,7 @@
 int candy(int* ratings, int ratingsSize);
 
 int main() {
-    int ratings[] = {2,2,2};
+    int ratings[] = {1,2,2};
     int ratingsSize = 3;
 
     int sugar = candy(ratings, ratingsSize);
@@ -16,24 +16,18 @@ int main() {
 }
 
 int candy(int* ratings, int ratingsSize) {
-    int candys = 1; 
-    int high = 0;
-    int neigh = 0;
+    
+    int count = ratingsSize;
+    int l = 0, i = 0;
 
-    for (int i = 0; i < ratingsSize && (i + 1) < ratingsSize; i++){
-        if(ratings[i] == ratings[i + 1]){
-            candys--;
-        }
-        candys++;
-
-    }
-
-    if(neigh == (ratingsSize - 1)){
-        neigh /= 2;
+    while (i < ratingsSize){
+        
+        
+        i++;
     }
     
-    candys = candys + high - neigh;
-
-    return candys;
     
+
+    return count + l;
+      
 }
