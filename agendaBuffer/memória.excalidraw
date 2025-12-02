@@ -313,16 +313,16 @@
         "type": 3
       },
       "seed": 586422921,
-      "version": 194,
-      "versionNonce": 2120126793,
+      "version": 198,
+      "versionNonce": 1298306793,
       "isDeleted": false,
       "boundElements": [
         {
-          "type": "text",
-          "id": "pzRYKa5-Sc4PSFkZPO5WT"
+          "id": "pzRYKa5-Sc4PSFkZPO5WT",
+          "type": "text"
         }
       ],
-      "updated": 1763318104791,
+      "updated": 1763322199003,
       "link": null,
       "locked": false
     },
@@ -346,11 +346,11 @@
       "index": "a9",
       "roundness": null,
       "seed": 202837161,
-      "version": 77,
-      "versionNonce": 1357873193,
+      "version": 81,
+      "versionNonce": 723353609,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1763318104791,
+      "updated": 1763322199003,
       "link": null,
       "locked": false,
       "text": "email temp.",

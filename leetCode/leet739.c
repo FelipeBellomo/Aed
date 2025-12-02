@@ -27,7 +27,6 @@ int* dailyTemperatures(int* temperatures, int temperaturesSize, int* returnSize)
 
     for (int i = 0; i < temperaturesSize; i++) {
 
-       
         while (top != -1 && temperatures[i] > temperatures[stack[top]]) {
             int idx = stack[top--];   
             asw[idx] = i - idx;         
