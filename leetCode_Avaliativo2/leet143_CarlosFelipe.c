@@ -14,7 +14,7 @@ void reorderList(struct ListNode* head) {
     int top = -1;
     int count = 0;
     
-    struct ListNode* stack[100000];
+    struct ListNode* stack[50000];
     
     while (ini != NULL) {
         ini = ini->next;
