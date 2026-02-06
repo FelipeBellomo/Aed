@@ -12,4 +12,4 @@ Dificuldades:
     chamar atribuindo a uma variável | "root->left = insertBST(root,val)"
     chamar utilizando return | return "insertBST(root,val)"
 
-Complexity : O(h)
+Complexity : O(logn)
